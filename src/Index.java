@@ -1,3 +1,4 @@
+package userClasses;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,7 +11,7 @@ import java.util.Scanner;
 
 public class Index {
 	
-	private HashMap <String, String> blobs;
+	public HashMap <String, String> blobs;
 	
 	public Index () {
 		blobs=new HashMap <String,String>();

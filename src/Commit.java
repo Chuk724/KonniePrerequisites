@@ -1,3 +1,4 @@
+package userClasses;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -17,22 +18,26 @@ public class Commit {
 	private String summary;
 	private String author;
 	private String date;
-	public Commit (String one, String two, String three, Commit parent) {
-		pTree= Path.of(one);
-		summary  = two;
-		author = three;
+	public Commit (String summary, String author, Commit parent) {
+		this.summary  = summary;
+		this.author = author;
 		parentCommit = parent;
 		if (parentCommit!=null) {
 		parentCommit.setNext(this);
 		}
-		 File objects = new File ("objects");
-	        if (objects.exists()==false) {
+		File objects = new File ("objects");
+	    if (objects.exists()==false) {
 	        	objects.mkdir();
-	        }
-	        Calendar today = Calendar.getInstance();
-	        today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
-	        date = today.getTime().toString();
+	    }
+	    Calendar today = Calendar.getInstance();
+	    today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
+	    date = today.getTime().toString();
 	}
+	
+	public void createTree() {
+		pTree = new HashMap<String, String>()
+	}
+	
 	public void setNext(Commit next) {
 		
 		nextCommit = next;

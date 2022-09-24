@@ -1,3 +1,4 @@
+package userClasses;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.Map.Entry;
 
 public class Tree {
@@ -19,24 +21,39 @@ public class Tree {
 //	
 	private String sha;
 	private ArrayList <String> ar;
-	private PrintWriter pw;
 	
 	public Tree (ArrayList <String> a) throws IOException {
+		File objects = new File ("objects");
+	    if (objects.exists()==false) {
+	        	objects.mkdir();
+	    }
 		ar = a;
 		String str = readAR(ar);
 		sha = encryptThisString(str);
-		String name = "objects/"+sha+".txt";
-		makeFile (name);
+		String name = "./objects/"+sha+".txt";
+		File tree = new File(name);
+		//Files.createFile(newFilePath);
 		
-		pw= new PrintWriter(name);
-		pw.append(str);
-	
-		pw.close();
-	}
-	
-	private void makeFile(String s) throws IOException {
-		Path newFilePath = Paths.get(s);
-	    Files.createFile(newFilePath);
+		PrintWriter pw = new PrintWriter(tree);
+		File index = new File ("./tests/index");
+		
+		//HashMap of fileNames and sha1s in index for folder - <sha1, fileName>
+		HashMap<String, String> newIndex = new HashMap<String, String>();
+		Scanner reader = new Scanner (index);
+		while (reader.hasNextLine()) {
+				String line = reader.nextLine();
+				String fileName = line.substring(0, line.indexOf(" "));
+				String sha1 = line.substring(line.indexOf(":") + 1);
+				newIndex.put(sha1, fileName);
+		}
+		reader.close();
+		for (String s : a) {
+			String inputSha = s.substring(s.indexOf(":") + 1);
+			String ogFileName = newIndex.get(inputSha);
+			pw.println(s + " " + ogFileName);
+		}
+		//pw.write(sb.toString());
+		pw.close();		
 	}
 	
 	private String readAR(ArrayList <String> as) {

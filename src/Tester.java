@@ -1,5 +1,9 @@
+package otherTests;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+
+import userClasses.Blob;
+import userClasses.Index;
 
 public class Tester {
 	public static void main (String[] args) throws IOException, NoSuchAlgorithmException {

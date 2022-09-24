@@ -1,6 +1,0 @@
-<<<<<<< HEAD
-foo.txt : 60eaad68490578f099fc5f29fbab9029561198e5
-bar.txt : 806728f36f746ae135d9ad867de260c481e1bf01
-=======
-test.txt : c3499c2729730a7f807efb8676a92dcb6f8a3f8f
->>>>>>> main
