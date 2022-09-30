@@ -50,7 +50,7 @@ public class Tree {
 		}
 		
 		sha = encryptThisString(rawText);
-		String name = "./objects/"+sha+".txt";
+		String name = "./objects/"+sha;
 		File tree = new File(name);
 		
 		/**for (String s : a) {

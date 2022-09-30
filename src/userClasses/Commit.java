@@ -8,7 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class Commit {
@@ -27,9 +29,9 @@ public class Commit {
 	    if (objects.exists()==false) {
 	        	objects.mkdir();
 	    }
-	    Calendar today = Calendar.getInstance();
-	    today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
-	    date = today.getTime().toString();
+	    SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
+		Date date = new Date();
+		this.date = formatter.format(date);
 	    
 	    if (parentCommit!=null) {
 			parentCommit.setNext(this);
@@ -37,6 +39,11 @@ public class Commit {
 		} else {
 			createTree(null);
 		}
+	    
+	    File index = new File("./index");
+	    index.delete();
+	    writeFile();
+	    
 	}
 	
 	public void createTree(Tree previousTree) throws Exception {

@@ -12,7 +12,6 @@ import java.util.Scanner;
 public class Index {
 	
 	public HashMap <String, String> blobs;
-	
 	public Index () throws Exception{
 		blobs=new HashMap <String,String>();
 		init();
@@ -38,7 +37,7 @@ public class Index {
 		Blob create = new Blob (filename);
 		blobs.put (filename, create.getSha1());
         File file = new File("index");
-		 BufferedWriter bf = null;
+		BufferedWriter bf = null;
 		  
 	        try {
 	  
