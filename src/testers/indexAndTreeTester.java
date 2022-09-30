@@ -1,5 +1,6 @@
 package testers;
 import userClasses.Index;
+import userClasses.Tree;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,9 +37,14 @@ class indexAndTreeTester {
 		Path indexFile = Path.of("./index");
 		assertTrue(idxFile.exists());
 		
+		
 		idx.add(fileName);
 		System.out.println(idx.blobs.get(fileName));
 		assertTrue(Files.readString(indexFile).contains(fileName + " : "+idx.blobs.get(fileName)));
+		
+		
+		Tree tree1 = new Tree(null);
+		
 		
 	}
 

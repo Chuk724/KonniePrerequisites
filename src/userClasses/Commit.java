@@ -14,17 +14,15 @@ import java.util.Objects;
 public class Commit {
 	private Commit nextCommit;
 	private Commit parentCommit;
-	private Path pTree;
+	private Tree pTree;
 	private String summary;
 	private String author;
 	private String date;
-	public Commit (String summary, String author, Commit parent) {
+	public Commit (String summary, String author, Commit parent) throws Exception {
 		this.summary  = summary;
 		this.author = author;
 		parentCommit = parent;
-		if (parentCommit!=null) {
-		parentCommit.setNext(this);
-		}
+		
 		File objects = new File ("objects");
 	    if (objects.exists()==false) {
 	        	objects.mkdir();
@@ -32,10 +30,21 @@ public class Commit {
 	    Calendar today = Calendar.getInstance();
 	    today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
 	    date = today.getTime().toString();
+	    
+	    if (parentCommit!=null) {
+			parentCommit.setNext(this);
+			createTree(parentCommit.getPrevTree());
+		} else {
+			createTree(null);
+		}
 	}
 	
-	public void createTree() {
-		pTree = new HashMap<String, String>()
+	public void createTree(Tree previousTree) throws Exception {
+		pTree = new Tree(previousTree);
+	}
+	
+	public Tree getPrevTree() throws Exception {
+		return pTree;
 	}
 	
 	public void setNext(Commit next) {
@@ -93,7 +102,7 @@ public class Commit {
 	}
 	public void writeFile() throws IOException {
 		String contents = new String ("");
-		contents = contents+"objects/"+pTree.getFileName() + "\n";
+		contents = contents+"objects/"+pTree.getSha() + "\n";
 		if (parentCommit ==null) {
 			contents=contents+ "\n";
 		} else{

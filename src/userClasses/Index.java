@@ -13,8 +13,9 @@ public class Index {
 	
 	public HashMap <String, String> blobs;
 	
-	public Index () {
+	public Index () throws Exception{
 		blobs=new HashMap <String,String>();
+		init();
 	}
 	public void init() throws IOException {
         

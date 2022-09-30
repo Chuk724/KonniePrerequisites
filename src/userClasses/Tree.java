@@ -18,24 +18,19 @@ import java.util.Map.Entry;
 
 public class Tree {
 //	private final int numberOfBranches = 100;
-//	
+	private Tree previousTree;
 	private String sha;
-	private ArrayList <String> ar;
 	
-	public Tree (ArrayList <String> a) throws IOException {
+	public Tree (Tree prevTree) throws IOException {
+		previousTree = prevTree;
 		File objects = new File ("objects");
 	    if (objects.exists()==false) {
 	        	objects.mkdir();
 	    }
-		ar = a;
-		String str = readAR(ar);
-		sha = encryptThisString(str);
-		String name = "./objects/"+sha+".txt";
-		File tree = new File(name);
+		String rawText = "";
 		//Files.createFile(newFilePath);
 		
-		PrintWriter pw = new PrintWriter(tree);
-		File index = new File ("./tests/index");
+		File index = new File ("./index");
 		
 		//HashMap of fileNames and sha1s in index for folder - <sha1, fileName>
 		HashMap<String, String> newIndex = new HashMap<String, String>();
@@ -47,22 +42,41 @@ public class Tree {
 				newIndex.put(sha1, fileName);
 		}
 		reader.close();
-		for (String s : a) {
+		
+		//need to get data going in Tree file to make the sha for the tree file name
+		
+		for (String s : newIndex.keySet()) {
+			rawText+= "blob :" + s + " " + newIndex.get(s);
+		}
+		
+		sha = encryptThisString(rawText);
+		String name = "./objects/"+sha+".txt";
+		File tree = new File(name);
+		
+		/**for (String s : a) {
 			String inputSha = s.substring(s.indexOf(":") + 1);
 			String ogFileName = newIndex.get(inputSha);
 			pw.println(s + " " + ogFileName);
+		}**/
+		
+		PrintWriter pw = new PrintWriter(tree);
+		for (String s : newIndex.keySet()) {
+			pw.println("blob :" + s + " " + newIndex.get(s));
+		}
+		if (previousTree != null) {
+			pw.println("tree : " + previousTree.getSha());
 		}
 		//pw.write(sb.toString());
 		pw.close();		
 	}
 	
-	private String readAR(ArrayList <String> as) {
+	/**private String readAR(ArrayList <String> as) {
 		String str = "";
 		for (String name: as) {
 			str+=name+"/n";
 		}
 		return str;
-	}
+	}**/
 	
 	 private static String encryptThisString(String input)
 	    {
