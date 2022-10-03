@@ -33,14 +33,15 @@ public class Commit {
 		Date date = new Date();
 		this.date = formatter.format(date);
 	    
-	    if (parentCommit!=null) {
+		
+		if (parentCommit!=null) {
 			parentCommit.setNext(this);
+			parentCommit.writeFile();
 			createTree(parentCommit.getPrevTree());
 		} else {
 			createTree(null);
 		}
-	    
-	    File index = new File("./index");
+		File index = new File("./index");
 	    index.delete();
 	    writeFile();
 	    

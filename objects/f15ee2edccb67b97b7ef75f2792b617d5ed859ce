@@ -1,0 +1,4 @@
+blob : 60eaad68490578f099fc5f29fbab9029561198e5 foo.txt
+blob : 806728f36f746ae135d9ad867de260c481e1bf01 bar.txt
+blob : 4a02a9c1efe8fa250361a091dd8570a0cf6670d6 test.txt
+tree : c74addfed1b4a9b8047121e54a07af07bb815d53

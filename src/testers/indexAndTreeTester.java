@@ -28,6 +28,8 @@ class indexAndTreeTester {
 	static void tearDownAfterClass() throws Exception {
 		File testerFile = new File(fileName);
 		testerFile.delete();
+		File indexFile = new File("./index");
+		indexFile.delete();
 	}
 
 	@Test
@@ -44,6 +46,8 @@ class indexAndTreeTester {
 		
 		
 		Tree tree1 = new Tree(null);
+		File treeFile = new File(tree1.getSha());
+		assertTrue(treeFile.exists());
 		
 		
 	}
