@@ -1,0 +1,68 @@
+package testers;
+
+import userClasses.Index;
+import userClasses.Commit;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+class deleteFilesTester {
+	private static String fileName = "test.txt";
+	private static String fileName2 = "test2.txt";
+	private static String fileName3 = "test3.txt";
+	
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+		//create a test .txt file
+		File file = new File(fileName);
+		file.createNewFile();
+		PrintWriter pw = new PrintWriter(file);
+		pw.write("Test Content.");
+		pw.close();
+		
+		//create a test .txt file
+		File file2 = new File(fileName2);
+		file2.createNewFile();
+		PrintWriter pw2 = new PrintWriter(file2);
+		pw2.write("Test2 Content.");
+		pw2.close();
+		
+		//create a test .txt file
+		File file3 = new File(fileName3);
+		file3.createNewFile();
+		PrintWriter pw3 = new PrintWriter(file3);
+		pw3.write("Test3 Content.");
+		pw3.close();		
+	}
+
+	@AfterAll
+	static void tearDownAfterClass() throws Exception {
+	}
+
+	@Test
+	void test() throws Exception {
+		Index idx = new Index();
+		idx.add(fileName);
+		idx.add(fileName2);
+		
+		Commit c1 = new Commit("first commit test", "Charlie Seymour", null);
+		
+		idx.add(fileName3);
+		idx.delete(fileName);
+		
+		Commit c2 = new Commit("second commit test", "Charlie Seymour", c1);
+
+		
+		
+		//idx.edit(fileName2);
+		
+		
+	}
+
+}

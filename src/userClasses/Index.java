@@ -89,6 +89,98 @@ public class Index {
 	                
 	            }
 	}
+	
+	public void delete (String filename) throws Exception {
+		File file = new File ("index");
+		
+		BufferedWriter bf = null;
+		PrintWriter out = null;
+		  
+	        try {
+	  
+	            // create new BufferedWriter for the output file
+	            //bf = new BufferedWriter(new FileWriter(file));
+	            
+	        	
+	        	out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+	            // iterate map entries
+	            
+	        	out.println("*deleted* " + filename);
+	        	/**for (Entry<String, String> entry :
+	                 blobs.entrySet()) {
+	  
+	                // put key and value separated by a colon
+	                bf.write(entry.getKey() + " : "
+	                         + entry.getValue());
+	  
+	                // new line
+	                bf.newLine();
+	            }**/
+	  
+	            out.flush();
+	        }
+	            catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	            finally {
+	      
+	                try {
+	      
+	                    // always close the writer
+	                    out.close();
+	                }
+	                catch (Exception e) {
+	                }
+	                
+	            }
+	}
+	
+	public void edit (String filename) throws Exception {
+		File file = new File ("index");
+		
+		BufferedWriter bf = null;
+		PrintWriter out = null;
+		  
+	        try {
+	  
+	            // create new BufferedWriter for the output file
+	            //bf = new BufferedWriter(new FileWriter(file));
+	            
+	        	
+	        	out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+	            // iterate map entries
+	            
+	        	out.println("*edited* " + filename);
+	        	/**for (Entry<String, String> entry :
+	                 blobs.entrySet()) {
+	  
+	                // put key and value separated by a colon
+	                bf.write(entry.getKey() + " : "
+	                         + entry.getValue());
+	  
+	                // new line
+	                bf.newLine();
+	            }**/
+	  
+	            out.flush();
+	        }
+	            catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	            finally {
+	      
+	                try {
+	      
+	                    // always close the writer
+	                    out.close();
+	                }
+	                catch (Exception e) {
+	                }
+	                
+	            }
+	}
+	
+	
 	public void remove (String filename) throws IOException {
 		Path p1=Paths.get(filename);
 		String contents = Files.readString(p1);

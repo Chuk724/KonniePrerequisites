@@ -20,6 +20,7 @@ public class Tree {
 //	private final int numberOfBranches = 100;
 	private Tree previousTree;
 	private String sha;
+	HashMap<String, String> newIndex;
 	
 	public Tree (Tree prevTree) throws IOException {
 		previousTree = prevTree;
@@ -30,20 +31,12 @@ public class Tree {
 		String rawText = "";
 		//Files.createFile(newFilePath);
 		
-		File index = new File ("./index");
-		
 		//HashMap of fileNames and sha1s in index for folder - <sha1, fileName>
-		HashMap<String, String> newIndex = new HashMap<String, String>();
-		Scanner reader = new Scanner (index);
-		while (reader.hasNextLine()) {
-				String line = reader.nextLine();
-				String fileName = line.substring(0, line.indexOf(" "));
-				String sha1 = line.substring(line.indexOf(":") + 1);
-				newIndex.put(sha1, fileName);
-		}
-		reader.close();
+		newIndex = new HashMap<String, String>();
 		
 		//need to get data going in Tree file to make the sha for the tree file name
+		
+		readIndex();
 		
 		for (String s : newIndex.keySet()) {
 			rawText+= "blob :" + s + " " + newIndex.get(s);
@@ -61,7 +54,7 @@ public class Tree {
 		
 		PrintWriter pw = new PrintWriter(tree);
 		for (String s : newIndex.keySet()) {
-			pw.println("blob :" + s + " " + newIndex.get(s));
+			pw.println("blob : " + s + " " + newIndex.get(s));
 		}
 		if (previousTree != null) {
 			pw.println("tree : " + previousTree.getSha());
@@ -76,9 +69,55 @@ public class Tree {
 			str+=name+"/n";
 		}
 		return str;
-	}**/
+	}
+	 * @throws FileNotFoundException **/
 	
-	 private static String encryptThisString(String input)
+	private void readIndex() throws FileNotFoundException {
+		File index = new File ("./index");
+		
+		Scanner reader = new Scanner (index);
+		while (reader.hasNextLine()) {
+				String line = reader.nextLine();
+				if (!line.contains("*deleted*") && !line.contains("*edited*")) {
+					String fileName = line.substring(0, line.indexOf(" "));
+					String sha1 = line.substring(line.indexOf(":") + 2);
+					newIndex.put(sha1, fileName);
+				} else {
+					String state = line.substring(0, line.indexOf(" "));
+					String fileName = line.substring(state.length());
+					findGoodBlobs(fileName);
+					//newIndex.put(fileName, state);
+				}
+				
+		}
+		reader.close();
+	}
+	
+	private void findGoodBlobs(String fileName) throws FileNotFoundException {
+		
+		if (previousTree != null) {
+			File prevTree = new File("./objects/" + previousTree.getSha());
+			Tree currentTree = getPreviousTree();
+			Scanner reader = new Scanner(prevTree);
+			while (reader.hasNextLine()) {
+				String line = reader.nextLine();
+				if (!line.contains(fileName)) {
+					String type = line.substring(0, line.indexOf(" "));
+					line = line.substring(line.indexOf(":") + 2);
+					String sha = line.substring(0, line.indexOf(" "));
+					line = line.substring(line.indexOf(" ") + 1);
+					String file = line.substring(0);
+					newIndex.put(sha, file);
+				}
+			}
+		}
+	}
+	
+	private Tree getPreviousTree() {
+		return previousTree;
+	}
+	
+	private static String encryptThisString(String input)
 	    {
 	        try {
 	            // getInstance() method is called with algorithm SHA-1
