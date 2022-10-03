@@ -1,6 +1,7 @@
 package testers;
 import userClasses.Index;
 import userClasses.Tree;
+import userClasses.Blob;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,6 +9,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,10 +29,10 @@ class indexAndTreeTester {
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
-		File testerFile = new File(fileName);
+		/**File testerFile = new File(fileName);
 		testerFile.delete();
 		File indexFile = new File("./index");
-		indexFile.delete();
+		indexFile.delete();**/
 	}
 
 	@Test
@@ -41,14 +44,20 @@ class indexAndTreeTester {
 		
 		
 		idx.add(fileName);
-		System.out.println(idx.blobs.get(fileName));
-		assertTrue(Files.readString(indexFile).contains(fileName + " : "+idx.blobs.get(fileName)));
+		Path p1=Paths.get(fileName);
+		String contents = Files.readString(p1);
+		String sha1 = Index.encryptThisString(contents);
+		
+		//System.out.println(idx.blobs.get(fileName));
+		System.out.println(fileName + " : " + sha1);
+		assertTrue(Files.readString(indexFile).contains(fileName + " : " + sha1));
 		
 		
 		Tree tree1 = new Tree(null);
-		File treeFile = new File(tree1.getSha());
+		File treeFile = new File("./objects/" + tree1.getSha());
 		assertTrue(treeFile.exists());
 		
+		idx.remove(fileName);
 		
 	}
 

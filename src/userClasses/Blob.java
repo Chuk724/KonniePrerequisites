@@ -15,7 +15,7 @@ public class Blob {
 	
 	public Blob (String file) throws IOException {
 		Path p1=Paths.get(file);
-		String contents = Files.readString(p1) ;
+		String contents = Files.readString(p1);
 		System.out.println ("Reading contents of " + file + ": " + contents);
 		 try {
 	            // getInstance() method is called with algorithm SHA-1
