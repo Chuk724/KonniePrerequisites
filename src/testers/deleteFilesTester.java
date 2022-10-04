@@ -16,6 +16,7 @@ class deleteFilesTester {
 	private static String fileName = "test.txt";
 	private static String fileName2 = "test2.txt";
 	private static String fileName3 = "test3.txt";
+	private static String fileName4 = "test4.txt";
 	
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -38,7 +39,14 @@ class deleteFilesTester {
 		file3.createNewFile();
 		PrintWriter pw3 = new PrintWriter(file3);
 		pw3.write("Test3 Content.");
-		pw3.close();		
+		pw3.close();	
+		
+		//create a test .txt file
+		File file4 = new File(fileName4);
+		file4.createNewFile();
+		PrintWriter pw4 = new PrintWriter(file4);
+		pw4.write("Test4 Content.");
+		pw4.close();
 	}
 
 	@AfterAll
@@ -54,9 +62,14 @@ class deleteFilesTester {
 		Commit c1 = new Commit("first commit test", "Charlie Seymour", null);
 		
 		idx.add(fileName3);
-		idx.delete(fileName);
 		
 		Commit c2 = new Commit("second commit test", "Charlie Seymour", c1);
+		
+		idx.add(fileName4);
+		idx.delete(fileName);
+		
+		Commit c3 = new Commit("third commit test", "Charlie Seymour", c2);
+		
 
 		
 		

@@ -84,8 +84,13 @@ public class Tree {
 					newIndex.put(sha1, fileName);
 				} else {
 					String state = line.substring(0, line.indexOf(" "));
-					String fileName = line.substring(state.length());
-					findGoodBlobs(fileName);
+					line = line.substring(line.indexOf(" ")+1);
+					String fileName = line.substring(0);
+					//System.out.println(fileName);
+					Tree pTree = findGoodBlobs(fileName, previousTree);
+					//System.out.println(previousTree.getSha());
+					previousTree = pTree;
+					//System.out.println(previousTree.getSha());
 					//newIndex.put(fileName, state);
 				}
 				
@@ -93,24 +98,40 @@ public class Tree {
 		reader.close();
 	}
 	
-	private void findGoodBlobs(String fileName) throws FileNotFoundException {
-		
-		if (previousTree != null) {
-			File prevTree = new File("./objects/" + previousTree.getSha());
-			Tree currentTree = getPreviousTree();
+	private Tree findGoodBlobs(String fileName, Tree previous) throws FileNotFoundException {
+		Tree returnTree = null;
+		if (previous != null) {
+			File prevTree = new File("./objects/" + previous.getSha());
+			//Tree currentTree = currentTree.getPreviousTree();
+			//System.out.println(previous.getSha());
+			//Tree currentTree = getPreviousTree();
 			Scanner reader = new Scanner(prevTree);
 			while (reader.hasNextLine()) {
 				String line = reader.nextLine();
 				if (!line.contains(fileName)) {
 					String type = line.substring(0, line.indexOf(" "));
-					line = line.substring(line.indexOf(":") + 2);
-					String sha = line.substring(0, line.indexOf(" "));
-					line = line.substring(line.indexOf(" ") + 1);
-					String file = line.substring(0);
-					newIndex.put(sha, file);
+					System.out.println(type);
+					if (type.equals("blob")) {
+						line = line.substring(line.indexOf(":") + 2);
+						String sha = line.substring(0, line.indexOf(" "));
+						line = line.substring(line.indexOf(" ") + 1);
+						String file = line.substring(0);
+						newIndex.put(sha, file);
+					} else if (type.equals("tree")) {
+						line = line.substring(line.indexOf(":") + 2);
+						String sha = line.substring(0);
+						System.out.println(sha);
+						Tree nextTree = previous.getPreviousTree();
+						System.out.println(nextTree.getSha());
+						findGoodBlobs(fileName, nextTree);
+					}
+				} else {
+					returnTree = previous;
 				}
 			}
 		}
+		return returnTree;
+		
 	}
 	
 	private Tree getPreviousTree() {
