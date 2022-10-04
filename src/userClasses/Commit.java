@@ -1,6 +1,9 @@
 package userClasses;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class Commit {
 	private Commit nextCommit;
@@ -29,6 +33,21 @@ public class Commit {
 	    if (objects.exists()==false) {
 	        	objects.mkdir();
 	    }
+	    
+	    File head = new File ("HEAD");
+	    if (head.exists()==false) {
+	    	head.createNewFile();
+	    }
+	    
+	    Scanner scanner = new Scanner(head);
+	    String currentHead = "";
+	    if (scanner.hasNextLine()) {
+	    	currentHead = scanner.nextLine();
+	    }
+	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(head, false)));
+	    out.println(generateSha1String());
+	    out.close();
+	    
 	    SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
 		Date date = new Date();
 		this.date = formatter.format(date);
