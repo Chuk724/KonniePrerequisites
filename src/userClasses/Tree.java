@@ -91,9 +91,7 @@ public class Tree {
 					String fileName = line.substring(0);
 					//System.out.println(fileName);
 					Tree pTree = findGoodBlobs(fileName, previousTree);
-					//System.out.println(previousTree.getSha());
-					previousTree = pTree;
-					//System.out.println(previousTree.getSha());
+					System.out.println("most recent clean tree: " + previousTree.getSha());
 					//newIndex.put(fileName, state);
 				}
 				
@@ -112,6 +110,12 @@ public class Tree {
 			Scanner reader = new Scanner(prevTree);
 			while (reader.hasNextLine()) {
 				String line = reader.nextLine();
+				System.out.println(deleted);
+				if (returnTree != null) {
+					System.out.println("current sha of return tree " + returnTree.getSha());
+				} else {
+					System.out.println("returnTree is null right now");
+				}
 				if (!line.contains(fileName)) {
 					String type = line.substring(0, line.indexOf(" "));
 					System.out.println(type);
@@ -126,15 +130,20 @@ public class Tree {
 						String sha = line.substring(0);
 						System.out.println(sha);
 						Tree nextTree = previous.getPreviousTree();
-						System.out.println(nextTree.getSha());
+						System.out.println("About to go into this tree: " + nextTree.getSha());
 						findGoodBlobs(fileName, nextTree);
 					}
 				} else {
 					returnTree = previous.getPreviousTree();
+					System.out.println("Sha of the last tree: " + returnTree.getSha());
 					deleted = true;
+					previousTree = returnTree;
 				}
 			}
+			//System.out.println("Sha of final tree: " + returnTree.getSha());
+			return returnTree;
 		}
+		//System.out.println("Sha of the last tree: " + returnTree.getSha());
 		return returnTree;
 		
 	}
