@@ -53,7 +53,7 @@ class deleteFilesTester {
 	static void tearDownAfterClass() throws Exception {
 	}
 
-	@Test
+	/**@Test
 	void test() throws Exception {
 		Index idx = new Index();
 		idx.add(fileName);
@@ -76,6 +76,23 @@ class deleteFilesTester {
 		//idx.edit(fileName2);
 		
 		
+	}**/
+	
+	@Test
+	void test2() throws Exception {
+		Index idx = new Index();
+		idx.add(fileName);
+		
+		Commit c1 = new Commit("first commit test", "Charlie Seymour", null);
+		
+		idx.add(fileName2);
+		idx.add(fileName3);
+		
+		Commit c2 = new Commit("second commit test", "Charlie Seymour", c1);
+		
+		idx.delete(fileName2);
+		
+		Commit c3 = new Commit("third commit test", "Charlie Seymour", c2);
 	}
 
 }

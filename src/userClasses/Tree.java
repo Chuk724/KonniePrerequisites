@@ -20,9 +20,11 @@ public class Tree {
 //	private final int numberOfBranches = 100;
 	private Tree previousTree;
 	private String sha;
+	private int numDeleted;
 	HashMap<String, String> newIndex;
 	
 	public Tree (Tree prevTree) throws IOException {
+		numDeleted = 0;
 		previousTree = prevTree;
 		File objects = new File ("objects");
 	    if (objects.exists()==false) {
@@ -84,6 +86,7 @@ public class Tree {
 					newIndex.put(sha1, fileName);
 				} else {
 					String state = line.substring(0, line.indexOf(" "));
+					numDeleted++;
 					line = line.substring(line.indexOf(" ")+1);
 					String fileName = line.substring(0);
 					//System.out.println(fileName);
@@ -100,6 +103,7 @@ public class Tree {
 	
 	private Tree findGoodBlobs(String fileName, Tree previous) throws FileNotFoundException {
 		Tree returnTree = null;
+		boolean deleted = false;
 		if (previous != null) {
 			File prevTree = new File("./objects/" + previous.getSha());
 			//Tree currentTree = currentTree.getPreviousTree();
@@ -117,7 +121,7 @@ public class Tree {
 						line = line.substring(line.indexOf(" ") + 1);
 						String file = line.substring(0);
 						newIndex.put(sha, file);
-					} else if (type.equals("tree")) {
+					} else if (type.equals("tree") && deleted == false) {
 						line = line.substring(line.indexOf(":") + 2);
 						String sha = line.substring(0);
 						System.out.println(sha);
@@ -126,7 +130,8 @@ public class Tree {
 						findGoodBlobs(fileName, nextTree);
 					}
 				} else {
-					returnTree = previous;
+					returnTree = previous.getPreviousTree();
+					deleted = true;
 				}
 			}
 		}
