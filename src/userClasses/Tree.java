@@ -90,6 +90,7 @@ public class Tree {
 					line = line.substring(line.indexOf(" ")+1);
 					String fileName = line.substring(0);
 					//System.out.println(fileName);
+					System.out.println("current previous " + previousTree.getSha());
 					Tree pTree = findGoodBlobs(fileName, previousTree);
 					System.out.println("most recent clean tree: " + previousTree.getSha());
 					//newIndex.put(fileName, state);
