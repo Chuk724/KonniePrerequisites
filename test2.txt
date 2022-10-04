@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-Test2 Content.
-=======
 Test2 content.
->>>>>>> main
