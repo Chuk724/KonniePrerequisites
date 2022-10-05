@@ -12,7 +12,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class deleteFilesTester {
+import userClasses.Commit;
+import userClasses.Index;
+
+class HeadTester {
+
 	private static String fileName = "test.txt";
 	private static String fileName2 = "test2.txt";
 	private static String fileName3 = "test3.txt";
@@ -51,55 +55,19 @@ class deleteFilesTester {
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
+		//File head = new File("HEAD");
+		//head.delete();
 	}
 
-	/**@Test
-	void test() throws Exception {
-		Index idx = new Index();
-		idx.add(fileName);
-		idx.add(fileName2);
-		
-		Commit c1 = new Commit("first commit test", "Charlie Seymour", null);
-		
-		idx.add(fileName3);
-		
-		Commit c2 = new Commit("second commit test", "Charlie Seymour", c1);
-		
-		idx.add(fileName4);
-		idx.delete(fileName);
-		
-		Commit c3 = new Commit("third commit test", "Charlie Seymour", c2);
-		
-
-		
-		
-		//idx.edit(fileName2);
-		
-		
-	}**/
-	
 	@Test
-	void test2() throws Exception {
+	void test() throws Exception {
 		Index idx = new Index();
 
 		idx.add(fileName);
 		Commit c1 = new Commit("first commit test", "Charlie Seymour");
 		
-		
 		idx.add(fileName2);
-		idx.add(fileName3);
 		Commit c2 = new Commit("second commit test", "Charlie Seymour");
-		
-		
-		idx.add(fileName4);
-		Commit c3 = new Commit("third commit test", "Charlie Seymour");
-		
-		
-		idx.delete(fileName2);
-		Commit c4 = new Commit("fourth commit test", "Charlie Seymour");
-		
-		idx.delete(fileName3);
-		Commit c5 = new Commit("fifth commit test", "Charlie Seymour");
 	}
 
 }

@@ -92,28 +92,28 @@ class CommitTester {
 		//First commit with 2 blob
 		indy.add(fileName);
 		indy.add(fileName2);
-		Commit c1 = new Commit("first commit test", "Charlie Seymour", null);
+		Commit c1 = new Commit("first commit test", "Charlie Seymour");
 		File c1File = new File("./objects/" + c1.generateSha1String());
 		assertTrue(c1File.exists());
 		
 		//Second commit with 2 more blobs
 		indy.add(fileName3);
 		indy.add(fileName4);
-		Commit c2 = new Commit("second commit test", "Charlie Seymour", c1);
+		Commit c2 = new Commit("second commit test", "Charlie Seymour");
 		File c2File = new File("./objects/" + c2.generateSha1String());
 		assertTrue(c2File.exists());
 		
 		//Third commit with 2 more blobs
 		indy.add(fileName5);
 		indy.add(fileName6);
-		Commit c3 = new Commit("third commit test", "Charlie Seymour", c2);
+		Commit c3 = new Commit("third commit test", "Charlie Seymour");
 		File c3File = new File("./objects/" + c3.generateSha1String());
 		assertTrue(c3File.exists());
 		
 		//Fourth commit with 2 more blobs
 		indy.add(fileName7);
 		indy.add(fileName8);
-		Commit c4 = new Commit("fourth commit test", "Charlie Seymour", c3);
+		Commit c4 = new Commit("fourth commit test", "Charlie Seymour");
 		File c4File = new File("./objects/" + c4.generateSha1String());
 		assertTrue(c4File.exists());
 		

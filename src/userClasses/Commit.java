@@ -1,6 +1,9 @@
 package userClasses;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,25 +21,62 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Commit {
-	private Commit nextCommit;
-	private Commit parentCommit;
+	
+	private String parentSha;
+	//private String nextSha;
+	
 	private Tree pTree;
 	private String summary;
 	private String author;
 	private String date;
-	public Commit (String summary, String author, Commit parent) throws Exception {
+	public Commit (String summary, String author) throws Exception {
 		this.summary  = summary;
 		this.author = author;
-		parentCommit = parent;
 		
 		File objects = new File ("objects");
 	    if (objects.exists()==false) {
 	        	objects.mkdir();
 	    }
 	    
-	    File head = new File ("HEAD");
+	    getHead();
+	    
+	    SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
+		Date date = new Date();
+		this.date = formatter.format(date);
+	    
+		File index = new File("./index");
+	    
+	    if(parentSha != null) {
+	    	createTreeForChild(getPTree(parentSha));
+	    } else {
+	    	createTree(null);
+	    }
+	    
+	    writeFile();
+	    
+	    if (parentSha != null) {
+	    	setAsChild();
+	    }
+		
+		replaceHead();
+		
+	    index.delete();
+		System.out.println(parentSha);
+	}
+	
+	public void createTree(String previousTree) throws Exception {
+		pTree = new Tree(previousTree);
+	}
+	
+	public void createTreeForChild(String previousTree) throws Exception {
+		pTree = new Tree(previousTree);
+	}
+	
+	public void getHead() throws Exception {
+		File head = new File ("HEAD");
 	    if (head.exists()==false) {
 	    	head.createNewFile();
+	    	return;
 	    }
 	    
 	    Scanner scanner = new Scanner(head);
@@ -44,41 +84,53 @@ public class Commit {
 	    if (scanner.hasNextLine()) {
 	    	currentHead = scanner.nextLine();
 	    }
-	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(head, false)));
+	    if (!currentHead.equals("")) {
+	    	parentSha = currentHead;
+	    }
+	    scanner.close();
+	    
+	}
+	
+	private void replaceHead() throws Exception {
+		File head = new File ("HEAD");
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(head, false)));
 	    out.println(generateSha1String());
 	    out.close();
-	    
-	    SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
-		Date date = new Date();
-		this.date = formatter.format(date);
-	    
+	}
+	
+	
+	public String getPTree(String commitSha) throws Exception {
+		File file = new File("./objects/" + commitSha);
+		Scanner scanner = new Scanner(file);
+		String tree = scanner.nextLine();
+		tree = tree.substring(tree.indexOf("/") +1);
+		return tree;
+	}
+	
+	
+	public void setAsChild() throws IOException {
+		File parentFile = new File("./objects/" + parentSha);
 		
-		if (parentCommit!=null) {
-			parentCommit.setNext(this);
-			parentCommit.writeFile();
-			createTree(parentCommit.getPrevTree());
-		} else {
-			createTree(null);
+		File tempFile = new File("myTempFile.next");
+		
+		BufferedReader reader = new BufferedReader(new FileReader(parentFile));
+		PrintWriter writer = new PrintWriter(new FileWriter(tempFile));
+		int counter = 0;
+		String currentLine;
+		while((currentLine = reader.readLine()) != null) {
+			counter++;
+			if (counter==3) {
+				writer.println("objects/" + generateSha1String());
+			} else {
+				writer.write(currentLine + System.getProperty("line.separator"));
+			}
 		}
-		File index = new File("./index");
-	    index.delete();
-	    writeFile();
-	    
+		writer.close();
+		reader.close();
+		tempFile.renameTo(parentFile);
 	}
 	
-	public void createTree(Tree previousTree) throws Exception {
-		pTree = new Tree(previousTree);
-	}
 	
-	public Tree getPrevTree() throws Exception {
-		return pTree;
-	}
-	
-	public void setNext(Commit next) {
-		
-		nextCommit = next;
-		
-	}
 	public String generateSha1String(){
 		String contents = getContents();
 		try {
@@ -120,26 +172,27 @@ public class Commit {
 		contents = contents+summary+ "\n";
 		contents = contents+date+ "\n";
 		contents = contents + author+ "\n";
-		if (parentCommit ==null) {
+		if (parentSha == null) {
 
 		} else{
-			contents=contents+ "objects/" + parentCommit.generateSha1String() ;
+			contents=contents+ "objects/" + parentSha ;
 		}
 		return contents;
 	}
 	public void writeFile() throws IOException {
 		String contents = new String ("");
 		contents = contents+"objects/"+pTree.getSha() + "\n";
-		if (parentCommit ==null) {
+		if (parentSha == null) {
 			contents=contents+ "\n";
 		} else{
-			contents=contents+ "objects/" + parentCommit.generateSha1String() + "\n";
+			contents=contents+ "objects/" + parentSha + "\n";
 		}
-		if (nextCommit ==null) {
+		contents=contents+ "\n";
+		/**if (nextSha == null) {
 			contents=contents+ "\n";
 		} else{
-			contents=contents+"objects/"+nextCommit.generateSha1String() + "\n";
-		}
+			contents=contents+"objects/"+nextSha + "\n";
+		}**/
 		contents=contents+author + "\n";
 		contents=contents+date + "\n";
 		contents=contents+this.summary;
